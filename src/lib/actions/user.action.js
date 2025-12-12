@@ -1,0 +1,34 @@
+import User from "../models/user";
+import { connect } from "../db";
+
+export async function createUser(user) {
+  try {
+    await connect();
+
+    if (!user.name || !user.email || !user.password) {
+      throw new Error("Missing required fields");
+    }
+
+    const newUser = await User.create(user);
+    return newUser.toObject();
+  } catch (error) {
+    console.error("Error creating user:", error);
+    throw error;
+  }
+}
+
+
+
+// import User from "../models/user";
+// import { connect} from "../db";
+
+// export async function createUser(user) {
+//     try{
+//    await connect();
+//    const newUser=await User.create(user);
+//    return JSON.parse(JSON.stringify(newUser))
+//     }catch(error){
+//          console.log(error)
+//     }
+    
+// }
