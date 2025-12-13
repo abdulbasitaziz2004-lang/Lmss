@@ -5,30 +5,33 @@ export async function createUser(user) {
   try {
     await connect();
 
-    if (!user.name || !user.email || !user.password) {
-      throw new Error("Missing required fields");
+    if (!user.clerkId || !user.email || !user.username) {
+      throw new Error("Missing required user fields");
     }
 
     const newUser = await User.create(user);
-    return newUser.toObject();
+    return newUser;
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error("❌ Error creating user:", error);
     throw error;
   }
 }
 
-
-
 // import User from "../models/user";
-// import { connect} from "../db";
+// import { connect } from "../db";
 
 // export async function createUser(user) {
-//     try{
-//    await connect();
-//    const newUser=await User.create(user);
-//    return JSON.parse(JSON.stringify(newUser))
-//     }catch(error){
-//          console.log(error)
+//   try {
+//     await connect();
+
+//     if (!user.name || !user.email || !user.password) {
+//       throw new Error("Missing required fields");
 //     }
-    
+
+//     const newUser = await User.create(user);
+//     return newUser.toObject();
+//   } catch (error) {
+//     console.error("Error creating user:", error);
+//     throw error;
+//   }
 // }
