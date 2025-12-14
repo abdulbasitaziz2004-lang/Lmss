@@ -5,8 +5,11 @@ export async function createUser(user) {
   try {
     await connect();
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ clerkId: user.clerkId });
+    // Check if user already exists by clerkId OR email
+    const existingUser = await User.findOne({
+      $or: [{ clerkId: user.clerkId }, { email: user.email }],
+    });
+
     if (existingUser) {
       return existingUser.toObject(); // Return existing user
     }
