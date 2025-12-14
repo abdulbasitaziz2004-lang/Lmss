@@ -4,6 +4,14 @@ import { connect } from "../db";
 export async function createUser(user) {
   try {
     await connect();
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ clerkId: user.clerkId });
+    if (existingUser) {
+      return existingUser.toObject(); // Return existing user
+    }
+
+    // Create new user
     const newUser = await User.create(user);
     return newUser.toObject();
   } catch (error) {
@@ -11,7 +19,6 @@ export async function createUser(user) {
     throw error;
   }
 }
-
 
 // import User from "../models/user";
 // import { connect } from "../db";
