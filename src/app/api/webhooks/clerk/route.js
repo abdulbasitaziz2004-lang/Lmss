@@ -1,22 +1,22 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { Webhook } from "svix";
-
 import { createUser } from "@/lib/actions/user.action";
 
 export const runtime = "nodejs";
 
 export async function POST(req) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+  const CLERK_API_KEY = process.env.CLERK_API_KEY;
 
-  if (!WEBHOOK_SECRET) {
-    return new Response("Missing WEBHOOK_SECRET", { status: 500 });
+  if (!WEBHOOK_SECRET || !CLERK_API_KEY) {
+    return new Response("Missing environment variables", { status: 500 });
   }
 
-  const body = await req.text(); // RAW body
+  const body = await req.text();
 
- const svix_id = req.headers.get("svix-id");
-const svix_timestamp = req.headers.get("svix-timestamp");
-const svix_signature = req.headers.get("svix-signature");
+  const svix_id = req.headers.get("svix-id");
+  const svix_timestamp = req.headers.get("svix-timestamp");
+  const svix_signature = req.headers.get("svix-signature");
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
     return new Response("Missing svix headers", { status: 400 });
@@ -42,25 +42,29 @@ const svix_signature = req.headers.get("svix-signature");
     try {
       const email = data.email_addresses?.[0]?.email_address || "";
 
-const user = {
-  clerkId: data.id,
-  email,
-  username:
-    data.username ??
-    `${email.split("@")[0]}_${data.id.slice(-5)}`,
-  firstName: data.first_name || "",
-  lastName: data.last_name || "",
-  photo: data.image_url || "",
-};
-
+      const user = {
+        clerkId: data.id,
+        email,
+        username:
+          data.username ??
+          `${email.split("@")[0]}_${data.id.slice(-5)}`,
+        firstName: data.first_name || "",
+        lastName: data.last_name || "",
+        photo: data.image_url || "",
+      };
 
       const newUser = await createUser(user);
 
-      await clerkClient.users.updateUserMetadata(data.id, {
-        publicMetadata: {
-          userId: newUser._id.toString(),
-        },
-      });
+      // Safely update Clerk metadata if method exists
+      if (clerkClient.users && typeof clerkClient.users.updateUserMetadata === "function") {
+        await clerkClient.users.updateUserMetadata(data.id, {
+          publicMetadata: { userId: newUser._id.toString() },
+        });
+      } else {
+        console.warn(
+          "⚠️ clerkClient.users.updateUserMetadata is undefined. Skipping metadata update."
+        );
+      }
 
       return new Response("OK", { status: 200 });
     } catch (error) {
