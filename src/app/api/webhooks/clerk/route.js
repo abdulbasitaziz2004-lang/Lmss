@@ -1,5 +1,4 @@
 import { clerkClient } from "@clerk/nextjs/server";
-import { headers } from "next/headers";
 import { Webhook } from "svix";
 
 import { createUser } from "@/lib/actions/user.action";
@@ -15,10 +14,9 @@ export async function POST(req) {
 
   const body = await req.text(); // RAW body
 
-  const headerPayload = headers();
-  const svix_id = headerPayload.get("svix-id");
-  const svix_timestamp = headerPayload.get("svix-timestamp");
-  const svix_signature = headerPayload.get("svix-signature");
+ const svix_id = req.headers.get("svix-id");
+const svix_timestamp = req.headers.get("svix-timestamp");
+const svix_signature = req.headers.get("svix-signature");
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
     return new Response("Missing svix headers", { status: 400 });
