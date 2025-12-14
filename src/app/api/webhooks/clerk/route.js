@@ -42,14 +42,19 @@ export async function POST(req) {
 
   if (type === "user.created") {
     try {
-      const user = {
-        clerkId: data.id,
-        email: data.email_addresses?.[0]?.email_address || "",
-        username: data.username || "",
-        firstName: data.first_name || "",
-        lastName: data.last_name || "",
-        photo: data.image_url || "",
-      };
+      const email = data.email_addresses?.[0]?.email_address || "";
+
+const user = {
+  clerkId: data.id,
+  email,
+  username:
+    data.username ??
+    `${email.split("@")[0]}_${data.id.slice(-5)}`,
+  firstName: data.first_name || "",
+  lastName: data.last_name || "",
+  photo: data.image_url || "",
+};
+
 
       const newUser = await createUser(user);
 
