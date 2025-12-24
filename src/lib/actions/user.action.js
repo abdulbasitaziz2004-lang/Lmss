@@ -1,5 +1,6 @@
 import User from "../models/user";
 import { connect } from "../db";
+import Course from "@/models/course";
 
 export async function createUser(user) {
   try {
@@ -14,6 +15,11 @@ export async function createUser(user) {
       return existingUser.toObject(); // Return existing user
     }
 
+     // Ensure role is valid and set to "student" if missing
+    if (!user.role || !["student", "instructor", "admin"].includes(user.role)) {
+      user.role = "student";
+    }
+    
     // Create new user
     const newUser = await User.create(user);
     return newUser.toObject();
@@ -21,6 +27,12 @@ export async function createUser(user) {
     console.error("Error creating user:", error);
     throw error;
   }
+}
+
+export async function getUserWithCourses(clerkId) {
+  await connect();
+  const user = await User.findOne({ clerkId }).populate("enrolledCourses").lean();
+  return user;
 }
 
 // import User from "../models/user";

@@ -51,6 +51,7 @@ export async function POST(req) {
       firstName: data.first_name || "",
       lastName: data.last_name || "",
       photo: data.image_url || "",
+      role: "student",
     });
 
     // ✅ IMPORTANT: return 200 always
