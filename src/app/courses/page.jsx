@@ -1,16 +1,15 @@
 "use client";
 export const dynamic = "force-dynamic";
 import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const COURSES_PER_PAGE = 6;
 
 export default function CoursesPage() {
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const [courses, setCourses] = useState([]);
-  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1", 10));
+  const [page, setPage] = useState(1); // start at page 1
   const [totalPages, setTotalPages] = useState(1);
 
   // Fetch courses from API
@@ -35,14 +34,14 @@ export default function CoursesPage() {
       {/* Logo at Top Center */}
       <div className="flex justify-center mb-12">
         <div className="flex text-2xl items-center font-extrabold bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent tracking-tight">
-        <img
-          src="/icon2.png" // Replace with your logo path
-          alt="DevAcademy Logo"
-          className="h-20 object-contain"
-        />
-        <p>
-          DevAcademy
-        </p>
+          <img
+            src="/icon2.png" // Replace with your logo path
+            alt="DevAcademy Logo"
+            className="h-20 object-contain"
+          />
+          <p>
+            DevAcademy
+          </p>
         </div>
       </div>
 
