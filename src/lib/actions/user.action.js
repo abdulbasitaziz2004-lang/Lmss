@@ -1,6 +1,6 @@
 import User from "../models/user";
 import { connect } from "../db";
-import Course from "@/models/course";
+import Course from "../models/course";
 
 export async function createUser(user) {
   try {
