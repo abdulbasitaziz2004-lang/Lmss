@@ -82,32 +82,36 @@ export default function AdminUserList() {
               >
                 <div className="flex-1">
                   <p className="text-white font-semibold text-lg mb-2">{user.firstName || "No Name"}</p>
-                  <div className="flex items-center gap-3">
-                    <p
-                      className={`text-[#71717a] text-sm transition-all duration-300 ${
-                        emailVisibility[user._id]
-                          ? "opacity-100 max-h-6"
-                          : "opacity-0 max-h-0 overflow-hidden"
-                      }`}
-                    >
-                      {user.email}
-                    </p>
-                    <button
-                      onClick={() => toggleEmailVisibility(user._id)}
-                      className="text-[#71717a] hover:text-white transition-colors duration-300"
-                      title={emailVisibility[user._id] ? "Hide Email" : "Show Email"}
-                    >
-                      {emailVisibility[user._id] ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[#71717a] text-xs font-medium">Email:</span>
+                    <div className="flex items-center gap-3">
+                      <p
+                        className={`text-[#71717a] text-sm transition-all duration-300 ${
+                          emailVisibility[user._id]
+                            ? "opacity-100 max-h-6"
+                            : "opacity-0 max-h-0 overflow-hidden"
+                        }`}
+                      >
+                        {user.email}
+                      </p>
+                      <button
+                        onClick={() => toggleEmailVisibility(user._id)}
+                        className="text-[#71717a] hover:text-white transition-colors duration-300"
+                        title={emailVisibility[user._id] ? "Hide Email" : "Show Email"}
+                      >
+                        {emailVisibility[user._id] ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
                   </div>
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
+                  <span className="text-[#71717a] text-xs font-medium">Role:</span>
                   <select
                     value={user.role || "student"}
                     onChange={(e) => updateRole(user._id, e.target.value)}
                     disabled={updatingUserId === user._id}
-                    className="bg-[rgba(59,130,246,0.1)] border border-[rgba(59,130,246,0.3)] text-white p-3 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:bg-[rgba(59,130,246,0.2)]"
+                    className="bg-[rgba(59,130,246,0.1)] border border-[rgba(59,130,246,0.3)] text-white p-3 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:bg-[rgba(59,130,246,0.2)] cursor-pointer"
                   >
                     <option value="student">Student</option>
                     <option value="instructor">Instructor</option>
