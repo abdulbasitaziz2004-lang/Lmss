@@ -1,7 +1,6 @@
 import CoursesSection from "@/components/CoursesSection";
 import { getCourses } from "@/lib/actions/course.action";
 
-// app/page.js
 export default async function Home({ searchParams }) {
 const { courses, total } = await getCourses({  page: 1, limit: 6 });
 

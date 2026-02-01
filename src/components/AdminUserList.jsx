@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function AdminUserList() {
   const [users, setUsers] = useState([]);
   const [updatingUserId, setUpdatingUserId] = useState(null);
+  const [emailVisibility, setEmailVisibility] = useState({}); // Track visibility per user
 
   useEffect(() => {
     fetch("/api/admin/users")
@@ -46,42 +48,76 @@ export default function AdminUserList() {
     }
   };
 
+  const toggleEmailVisibility = (userId) => {
+    setEmailVisibility((prev) => ({
+      ...prev,
+      [userId]: !prev[userId],
+    }));
+  };
+
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <Toaster position="top-right" />
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Manage Users
-      </h1>
+    <div className="min-h-screen bg-white dark:text-white dark:bg-[#0a0a0f] text-black overflow-x-hidden transition-all duration-300">
+      <div className="pt-[140px] pb-20 px-12 max-w-4xl mx-auto max-md:pt-24 max-md:px-6">
+        <Toaster position="top-right" />
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-black mb-6 bg-linear-to-r from-blue-50 via-blue-300 to-blue-700 dark:from-white dark:via-[#b9b9c6] dark:to-[#a1a1aa] bg-clip-text text-transparent animate-[fadeInUp_1s] max-lg:text-4xl max-md:text-3xl">
+            Manage Users
+          </h1>
+          <p className="text-lg text-[#a1a1aa] animate-[fadeInUp_1.2s]">
+            Admin dashboard for user role management
+          </p>
+        </div>
 
-      <div className="bg-gray-800 p-4 rounded-lg shadow-md space-y-4">
-        {users.length === 0 && (
-          <p className="text-gray-400 text-center">No users found</p>
-        )}
+        <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.08)] rounded-[20px] p-8 shadow-md animate-[fadeInUp_1.4s]">
+          {users.length === 0 && (
+            <p className="text-[#71717a] text-center py-8">No users found</p>
+          )}
 
-        {users.map((user) => (
-          <div
-            key={user._id}
-            className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 bg-gray-900 rounded hover:bg-gray-700 transition"
-          >
-            <div className="flex-1">
-              <p className="text-white font-semibold">{user.firstName || "No Name"}</p>
-              <p className="text-gray-400 text-sm">{user.email}</p>
-            </div>
-
-            <div>
-              <select
-                value={user.role || "student"}
-                onChange={(e) => updateRole(user._id, e.target.value)}
-                disabled={updatingUserId === user._id}
-                className="bg-gray-800 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+          <div className="space-y-6">
+            {users.map((user, idx) => (
+              <div
+                key={user._id}
+                className="flex flex-col md:flex-row items-center justify-between gap-6 p-6 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.08)] rounded-[15px] transition-all duration-300 hover:bg-[rgba(255,255,255,0.04)] hover:border-[rgba(59,130,246,0.3)] hover:translate-y-[-5px] hover:shadow-[0_6px_25px_rgba(59,130,246,0.1)] animate-[fadeInUp_1.6s]"
+                style={{ animationDelay: `${idx * 0.1}s` }}
               >
-                <option value="student">Student</option>
-                <option value="instructor">Instructor</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
+                <div className="flex-1">
+                  <p className="text-white font-semibold text-lg mb-2">{user.firstName || "No Name"}</p>
+                  <div className="flex items-center gap-3">
+                    <p
+                      className={`text-[#71717a] text-sm transition-all duration-300 ${
+                        emailVisibility[user._id]
+                          ? "opacity-100 max-h-6"
+                          : "opacity-0 max-h-0 overflow-hidden"
+                      }`}
+                    >
+                      {user.email}
+                    </p>
+                    <button
+                      onClick={() => toggleEmailVisibility(user._id)}
+                      className="text-[#71717a] hover:text-white transition-colors duration-300"
+                      title={emailVisibility[user._id] ? "Hide Email" : "Show Email"}
+                    >
+                      {emailVisibility[user._id] ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <select
+                    value={user.role || "student"}
+                    onChange={(e) => updateRole(user._id, e.target.value)}
+                    disabled={updatingUserId === user._id}
+                    className="bg-[rgba(59,130,246,0.1)] border border-[rgba(59,130,246,0.3)] text-white p-3 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 hover:bg-[rgba(59,130,246,0.2)]"
+                  >
+                    <option value="student">Student</option>
+                    <option value="instructor">Instructor</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );
