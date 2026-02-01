@@ -18,7 +18,7 @@ const Footer = () => {
             <h3 className="mb-6 text-white font-bold text-lg">Courses</h3>
             <ul className="list-none">
               {['Web Development', 'UI/UX Design', 'Frontend Development', 'Backend Development', 'Full Stack'].map((item, idx) => (
-                <li key={idx} className="mb-3"><a href="#" className="text-[#a1a1aa] no-underline transition-colors duration-300 text-[0.95rem] hover:text-[#60a5fa]">{item}</a></li>
+                <li key={idx} className="mb-3"><a href="#" className=" text-[#a1a1aa] no-underline transition-colors duration-300 text-[0.95rem]   hover:text-[#60a5fa]">{item}</a></li>
               ))}
             </ul>
           </div>

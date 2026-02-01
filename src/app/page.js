@@ -7,14 +7,13 @@ const { courses, total } = await getCourses({  page: 1, limit: 6 });
 
   return (
     <div className="min-h-screen  bg-white dark:text-white dark:bg-[#0a0a0f] text-black  overflow-x-hidden transition-all duration-300">
-      
       {/* Hero Section */}
       <section className="pt-[140px] pb-20 px-12 text-center relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-1/2 before:translate-x-[-50%] before:w-[800px] before:h-[800px] before:bg-[radial-gradient(circle,rgba(59,130,246,0.15)_0%,transparent_70%)] before:pointer-events-none max-md:pt-24 max-md:px-6">
         <div className="max-w-[900px] mx-auto relative z-1">
           <div className="inline-block py-2 px-5 bg-[rgba(59,130,246,0.1)] border border-[rgba(59,130,246,0.3)] rounded-[50px] text-[0.85rem] font-semibold text-[#60a5fa] mb-8 animate-[fadeInDown_0.8s]">
             🚀 50,000+ Students Learning
           </div>
-          <h1 className="text-[4.5rem] mb-6 font-black leading-[1.1] bg-linear-to-r from-white to-[#a1a1aa] bg-clip-text text-transparent animate-[fadeInUp_1s] max-lg:text-5xl max-md:text-4xl">
+          <h1 className="text-[4.5rem] mb-6 font-black leading-[1.1] bg-linear-to-r  from-blue-50 via-blue-300 to-blue-700 dark:from-white dark:via-[#b9b9c6] dark:to-[#a1a1aa] bg-clip-text text-transparent animate-[fadeInUp_1s] max-lg:text-5xl max-md:text-4xl">
             Master Web Development & UI/UX Design
           </h1>
           <p className="text-xl text-[#a1a1aa] mb-12 leading-[1.8] animate-[fadeInUp_1.2s] max-md:text-base">

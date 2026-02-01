@@ -3,7 +3,7 @@ import Course from "@/lib/models/course";
 import cloudinary from "@/lib/cloudinary";
 
 export async function PATCH(req, { params }) {
-  const { courseId } = params;
+  const { courseId } = await params;  // Fixed: Added 'await' to unwrap the Promise
 
   try {
     const updates = await req.json();
@@ -39,7 +39,7 @@ export async function PATCH(req, { params }) {
 }
 
 export async function DELETE(req, { params }) {
-  const { courseId } = params;
+  const { courseId } = await params;  // Fixed: Added 'await' to unwrap the Promise
 
   try {
     await connect();
