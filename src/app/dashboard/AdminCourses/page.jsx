@@ -202,7 +202,7 @@ if (form.rating < 0 || form.rating > 5) {
           <div className="md:col-span-2">
             <label className="text-gray-300 mb-1 block">Course Icon *</label>
             <CldUploadWidget
-              uploadPreset="courses"
+              uploadPreset="course_icons"
               onSuccess={handleIconUpload}
             >
               {({ open }) => (
