@@ -5,6 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { CldUploadWidget } from "next-cloudinary";
 import { Plus, Trash2, ChevronDown, Play, Pencil, X, Check, GripVertical } from "lucide-react";
 import { getEmbedUrl } from "@/components/YoutubeEmbed";
+import useRoleGuard from "@/hooks/useRoleGuard/route";
 
 const slugify = (text) =>
   text.toLowerCase().trim()
@@ -81,6 +82,7 @@ const EMPTY_FORM = {
 
 /* ── accept userRole prop ── */
 export default function AdminCourses({ userRole = "instructor" }) {
+   useRoleGuard(["admin", "instructor"]);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState(null);

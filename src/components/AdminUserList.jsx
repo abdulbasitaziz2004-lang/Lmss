@@ -1,5 +1,5 @@
 "use client";
-
+import useRoleGuard from "@/hooks/useRoleGuard/route";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Eye, EyeOff, Shield, GraduationCap, User, Search, Users, Trash2 } from "lucide-react";
@@ -35,6 +35,7 @@ function Avatar({ name, email }) {
 }
 
 export default function AdminUserList() {
+  useRoleGuard(["admin"]);
   const [users, setUsers]                   = useState([]);
   const [updatingUserId, setUpdatingUserId] = useState(null);
   const [deletingUserId, setDeletingUserId] = useState(null);
