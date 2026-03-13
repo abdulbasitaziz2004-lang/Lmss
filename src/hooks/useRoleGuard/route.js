@@ -1,34 +1,29 @@
+// hooks/useRoleGuard.js
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-/**
- * Polls /api/me every N seconds.
- * If the user's role no longer satisfies allowedRoles, redirects them out.
- *
- * Usage:
- *   useRoleGuard(["admin", "instructor"])  // on instructor pages
- *   useRoleGuard(["admin"])                // on admin pages
- */
 export default function useRoleGuard(allowedRoles = [], intervalMs = 10000) {
-  const router  = useRouter();
-  const warned  = useRef(false);
+  const router = useRouter();
 
   useEffect(() => {
+    let redirecting = false;
+
     const check = async () => {
+      if (redirecting) return;
       try {
-        const res  = await fetch("/api/me");
+        const res = await fetch("/api/me");
         if (!res.ok) return;
         const { role } = await res.json();
 
-        if (!allowedRoles.includes(role) && !warned.current) {
-          warned.current = true;
+        if (!allowedRoles.includes(role)) {
+          redirecting = true;
           toast.error("Your role has been updated. Redirecting...");
           setTimeout(() => {
             router.push("/dashboard");
-            router.refresh(); // force server component re-render
+            router.refresh();
           }, 1500);
         }
       } catch {
@@ -36,9 +31,11 @@ export default function useRoleGuard(allowedRoles = [], intervalMs = 10000) {
       }
     };
 
-    // Check immediately on mount, then on interval
     check();
     const id = setInterval(check, intervalMs);
-    return () => clearInterval(id);
-  }, [allowedRoles, intervalMs, router]);
+    return () => {
+      clearInterval(id);
+      redirecting = false;
+    };
+  }, []); // empty deps — only runs once on mount
 }
