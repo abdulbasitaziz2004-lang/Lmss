@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
  *   useRoleGuard(["admin", "instructor"])  // on instructor pages
  *   useRoleGuard(["admin"])                // on admin pages
  */
-export default function useRoleGuard(allowedRoles = [], intervalMs = 10000) {
+export default function useRoleGuard(allowedRoles = [], intervalMs = 5000) {
   const router  = useRouter();
   const warned  = useRef(false);
 
