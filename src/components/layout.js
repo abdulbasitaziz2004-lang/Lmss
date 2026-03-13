@@ -1,14 +1,13 @@
-import Navbar from "./navbar";
-import Footer from "./footer";
-
-const Layout = ({ children, hideNavFooter }) => {
+import { getCurrentDbUser } from "@/lib/actions/getCurrentUser";
+import ClientLayout from "./Clientlayout.jsx";
+ 
+export default async function Layout({ children }) {
+  const user = await getCurrentDbUser();
+ 
   return (
-    <div>
-      {!hideNavFooter && <Navbar />}
+    <ClientLayout userRole={user?.role}>
       {children}
-      {!hideNavFooter && <Footer />}
-    </div>
+    </ClientLayout>
   );
-};
-
-export default Layout;
+}
+ 

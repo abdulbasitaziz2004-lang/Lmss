@@ -1,9 +1,20 @@
 import { connect } from "@/lib/db";
 import Course from "@/lib/models/course";
 import cloudinary from "@/lib/cloudinary";
+import { getCurrentDbUser } from "@/lib/actions/getCurrentUser";
 
 export async function PATCH(req, { params }) {
-  const { courseId } = await params;  // Fixed: Added 'await' to unwrap the Promise
+  
+    const user = await getCurrentDbUser();
+
+  if (!user || !["admin", "instructor"].includes(user.role)) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
+  }
+  
+  const { courseId } = await params;  
 
   try {
     const updates = await req.json();

@@ -1,6 +1,7 @@
 import CoursesSection from "@/components/CoursesSection";
 import { getCourses } from "@/lib/actions/course.action";
 
+
 export default async function Home({ searchParams }) {
 const { courses, total } = await getCourses({  page: 1, limit: 6 });
 
@@ -26,7 +27,7 @@ const { courses, total } = await getCourses({  page: 1, limit: 6 });
       </section>
 
       {/* Courses Section */}
-      <CoursesSection courses={courses} />
+      <CoursesSection courses={courses}/>
 
       {/* Features Section */}
       <section className="bg-linear-to-b from-transparent to-[rgba(59,130,246,0.03)] py-24 px-12 relative" id="features">

@@ -1,6 +1,10 @@
+// app/courses/[slug]/page.jsx
 import EnrollButton from "@/components/EnrollButton";
+import YoutubeEmbed from "@/components/YoutubeEmbed";
 import { getCourses, getCourseById } from "@/lib/actions/course.action";
-import Image from "next/image";
+import { getCurrentDbUser } from "@/lib/actions/getCurrentUser";
+import LockedChapters from "@/components/LockedChapters";
+import { Lock } from "lucide-react";
 
 export default async function CoursePage({ params: paramsPromise }) {
   const params = await paramsPromise;
@@ -17,6 +21,10 @@ export default async function CoursePage({ params: paramsPromise }) {
     );
 
   const course = await getCourseById(courseMeta._id);
+  const user = await getCurrentDbUser();
+  const isEnrolled = user?.enrolledCourses?.some(
+    (id) => id.toString() === course._id.toString()
+  );
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0a0a0f] dark:text-white text-black px-12 py-24 max-md:px-6">
@@ -45,10 +53,20 @@ export default async function CoursePage({ params: paramsPromise }) {
           <p className="text-[#a1a1aa] mb-2">Lessons: {course.lessons}</p>
           <p className="text-[#a1a1aa] mb-2">Students: {course.students}</p>
           <p className="text-[#a1a1aa] mb-2">Rating: {course.rating}</p>
-          <p className="text-[#a1a1aa] mb-4">Price: <span className="font-bold text-white">${course.price}</span></p>
-          <EnrollButton courseId={course._id.toString()} />
+          <p className="text-[#a1a1aa] mb-4">
+            Price: <span className="font-bold text-white">${course.price}</span>
+          </p>
+          <EnrollButton courseId={course._id.toString()} isEnrolled={isEnrolled} />
         </div>
       </div>
+
+      {/* Intro Video — visible to everyone */}
+      {course.introVideo && (
+        <div className="max-w-4xl mx-auto mb-10">
+          <h2 className="text-2xl font-bold mb-4 text-white">Course Preview</h2>
+          <YoutubeEmbed url={course.introVideo} title={`${course.title} - Intro`} />
+        </div>
+      )}
 
       {/* Course Description */}
       {course.description && (
@@ -59,6 +77,12 @@ export default async function CoursePage({ params: paramsPromise }) {
           <p className="text-[#a1a1aa] leading-relaxed">{course.description}</p>
         </div>
       )}
+
+      {/* Chapters List */}
+      <LockedChapters
+  chapters={course.chapters.map(ch => ({ title: ch.title }))}
+  isEnrolled={isEnrolled}
+/>
 
       {/* Course Details Grid */}
       <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-6 mb-16">
@@ -93,7 +117,7 @@ export default async function CoursePage({ params: paramsPromise }) {
         <h2 className="text-3xl font-bold mb-4 bg-linear-to-r from-white to-[#a1a1aa] bg-clip-text text-transparent">
           Ready to Start Learning?
         </h2>
-        <EnrollButton courseId={course._id.toString()} />
+        <EnrollButton courseId={course._id.toString()} isEnrolled={isEnrolled} />
       </div>
     </div>
   );

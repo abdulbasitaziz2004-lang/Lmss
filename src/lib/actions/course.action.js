@@ -18,12 +18,17 @@ export async function getCourses({ category = null, page = 1, limit = 20 } = {})
     .limit(limit)
     .lean();
 
-  // convert ObjectId to string and dates to ISO
   const plainCourses = courses.map((course) => ({
     ...course,
     _id: course._id.toString(),
-    createdAt: course.createdAt.toISOString(),
-    updatedAt: course.updatedAt.toISOString(),
+    createdAt: course.createdAt?.toISOString(),
+    updatedAt: course.updatedAt?.toISOString(),
+    // Serialize every chapter's _id too
+    chapters: (course.chapters || []).map((ch) => ({
+      _id: ch._id.toString(),
+      title: ch.title,
+      videoUrl: ch.videoUrl,
+    })),
   }));
 
   const total = await Course.countDocuments(query);
@@ -31,7 +36,6 @@ export async function getCourses({ category = null, page = 1, limit = 20 } = {})
   return { courses: plainCourses, total, page, limit };
 }
 
-// ✅ New helper to fetch a single course by id and show url as slug
 export async function getCourseById(id) {
   await connect();
 
@@ -41,17 +45,32 @@ export async function getCourseById(id) {
   return {
     ...course,
     _id: course._id.toString(),
-    createdAt: course.createdAt.toISOString(),
-    updatedAt: course.updatedAt.toISOString(),
+    createdAt: course.createdAt?.toISOString(),
+    updatedAt: course.updatedAt?.toISOString(),
+    // Serialize every chapter's _id too
+    chapters: (course.chapters || []).map((ch) => ({
+      _id: ch._id.toString(),
+      title: ch.title,
+      videoUrl: ch.videoUrl,
+    })),
   };
 }
-// course for dashboard
+
 export async function getCoursesByIds(ids = []) {
   await connect();
 
   const courses = await Course.find({ _id: { $in: ids } }).lean();
+
   return courses.map((course) => ({
     ...course,
     _id: course._id.toString(),
+    createdAt: course.createdAt?.toISOString(),
+    updatedAt: course.updatedAt?.toISOString(),
+    // Serialize every chapter's _id too
+    chapters: (course.chapters || []).map((ch) => ({
+      _id: ch._id.toString(),
+      title: ch.title,
+      videoUrl: ch.videoUrl,
+    })),
   }));
 }
