@@ -1,41 +1,37 @@
-// hooks/useRoleGuard.js
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 export default function useRoleGuard(allowedRoles = [], intervalMs = 10000) {
-  const router = useRouter();
+  const router       = useRouter();
+  const redirecting  = useRef(false);
 
   useEffect(() => {
-    let redirecting = false;
+    redirecting.current = false; // reset on every fresh mount
 
     const check = async () => {
-      if (redirecting) return;
+      if (redirecting.current) return;
       try {
         const res = await fetch("/api/me");
         if (!res.ok) return;
         const { role } = await res.json();
 
         if (!allowedRoles.includes(role)) {
-          redirecting = true;
+          redirecting.current = true;
           toast.error("Your role has been updated. Redirecting...");
           setTimeout(() => {
-            router.push("/dashboard");
-            router.refresh();
+            window.location.href = "/dashboard"; // hard redirect, kills interval
           }, 1500);
         }
       } catch {
-        // network blip — silently ignore
+        // ignore network blips
       }
     };
 
     check();
     const id = setInterval(check, intervalMs);
-    return () => {
-      clearInterval(id);
-      redirecting = false;
-    };
-  }, []); // empty deps — only runs once on mount
+    return () => clearInterval(id);
+  }, []);
 }
